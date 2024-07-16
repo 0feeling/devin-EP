@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jeu du Devin</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin-top: 50px;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+    <h2>Jeu du Devin</h2>
+    <p>Est-ce votre nombre ?</p>
+    <p id="guess"></p>
+    <p id="emoji"></p>
+    <button onclick="checkGuess('low')">Trop bas</button>
+    <button onclick="checkGuess('correct')">Correct</button>
+    <button onclick="checkGuess('high')">Trop haut</button>
+
+    <script>
+        let min = 0;
+        let max = 999;
+        let guess;
+        let previousGuess;
+
+        function startGame() {
+            alert("Bienvenue au jeu du devin !\n\nJe vais deviner un nombre entre 0 et 999. Vous devez m'aider en me disant si ma supposition est trop basse, correcte ou trop haute. Cliquez sur les boutons appropriés pour me guider. Essayons de trouver votre nombre avec le moins d'essais possible !");
+            guess = Math.floor((min + max) / 2);
+            document.getElementById('guess').textContent = guess;
+            document.getElementById('emoji').textContent = "🔍";
+        }
+
+        function checkGuess(result) {
+            previousGuess = guess;
+            
+            if (result === 'low' && guess >= min + 1 && guess <= max) {
+                min = guess + 1; // Ajuster a la borne inférieure
+            } else if (result === 'high' && guess >= min && guess <= max - 1) {
+                max = guess - 1; // Ajuster a la borne supérieure
+            } else if (result === 'correct' && guess >= min && guess <= max) {
+                document.getElementById('guess').textContent = `Vous avez gagné ! J'ai deviné votre nombre ${guess} ! 🎉`;
+                document.getElementById('guess').style.color = 'green'; // Changer la couleur pour indiquer le succès
+                document.getElementById('emoji').textContent = "🥳";
+                disableButtons(); // Désactiver les boutons après la victoire
+                return; // Terminer le jeu
+            } else {
+                alert("Houla !! Ne triche pas !! Sélectionne la bonne option!");
+                return;
+            }
+
+            // Faire la prochaine supposition
+            guess = Math.floor((min + max) / 2);
+            document.getElementById('guess').textContent = guess;
+
+            // Mise à jour des emojis en fonction de la proximité de la nouvelle supposition
+            if (Math.abs(guess - previousGuess) > 50) {
+                document.getElementById('emoji').textContent = "😅";
+            } else if (Math.abs(guess - previousGuess) > 20) {
+                document.getElementById('emoji').textContent = "🙂";
+            } else {
+                document.getElementById('emoji').textContent = "😃";
+            }
+        }
+
+        function disableButtons() {
+            // Désactiver tous les boutons après la victoire
+            let buttons = document.getElementsByTagName('button');
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].disabled = true;
+            }
+        }
+
+        // Démarrer le jeu lorsque la page est chargée
+        window.onload = startGame;
+    </script>
+</body>
+</html>
